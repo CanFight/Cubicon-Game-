@@ -12,13 +12,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 /*
  * @author Niklas
  */
-public class MainMenu { //creates the animation of stars passing by.
+public class MainMenu { //The main menu in the game.
 
     private int screenWidth, screenHeight;
-    private Star[] stars;
+    private Star[] stars; //an array of objects used to create a nice background effect
 
     private InputHandler inputHandler;
-    private boolean startGame, startScenarioMaker, customScenarioPicked, scenarioPickerOpen;
+    private boolean startCampaing, startScenarioMaker, customScenarioPicked, scenarioPickerOpen;
     private String customScenarioPath = "";
     private double spawnX, spawnY;
 
@@ -29,18 +29,18 @@ public class MainMenu { //creates the animation of stars passing by.
         this.screenHeight = screenHeight;
         this.screenWidth = screenWidth;
         this.inputHandler = inputHandler;
-        startGame = false;
+        startCampaing = false;
         scenarioPickerOpen = false;
-        spawnX = screenWidth / 2;
-        spawnY = screenHeight / 2;
         setUpUI();
-        stars = new Star[300];
+        spawnX = screenWidth / 2; //where the stars comes from.
+        spawnY = screenHeight / 2; 
+        stars = new Star[300];//create all the stars.
         for (int i = 0; i < stars.length; i++) {
             stars[i] = new Star(this.screenWidth, this.screenHeight);
         }
     }
 
-    private void setUpUI() {
+    private void setUpUI() {//sets up the 4 menu buttons campaing, custom scenario, scenario maker, and exit.
         buttons = new Rectangle[4];
         buttons[0] = new Rectangle(screenWidth / 2 - 150, screenHeight / 2 - 125, 300, 50);
         buttons[1] = new Rectangle(screenWidth / 2 - 150, screenHeight / 2 - 65, 300, 50);
@@ -49,10 +49,10 @@ public class MainMenu { //creates the animation of stars passing by.
 
     }
 
-    public void checkButtonClick() {
+    public void checkButtonClick() {//check if any of the menu buttons where clicked.
         if (inputHandler.isMousePressLeft()) {
             if (buttons[0].contains(inputHandler.getMouseX(), inputHandler.getMouseY())) {
-                startGame = true;
+                startCampaing = true;
             }
             if (buttons[1].contains(inputHandler.getMouseX(), inputHandler.getMouseY())) {
                 if (!isCustomScenarioPickerIsOpen()) {
@@ -103,11 +103,11 @@ public class MainMenu { //creates the animation of stars passing by.
     }
 
     public void openMenu() {
-        startGame = false;
+        startCampaing = false;
     }
 
-    public boolean startGame() {
-        return startGame;
+    public boolean startCampaign() {
+        return startCampaing;
     }
 
     public boolean startScenarioMaker() {
@@ -118,11 +118,11 @@ public class MainMenu { //creates the animation of stars passing by.
         this.startScenarioMaker = b;
     }
 
-    public void setStartGame(boolean b) {
-        this.startGame = b;
+    public void setStartCampaign(boolean b) {
+        this.startCampaing = b;
     }
 
-    public void updateScreenDim(int width, int height) {
+    public void updateScreenDim(int width, int height) {//in case we deside the size of the window changed.
         screenWidth = width;
         screenHeight = height;
         for (Star s : stars) {
@@ -134,20 +134,20 @@ public class MainMenu { //creates the animation of stars passing by.
         }
     }
 
-    public void moveStarsSpawnTowards(int x, int y) {
+    public void moveStarsSpawnTowards(int x, int y) { //moves the center of the background effect towards the specified point. (used for the background center to follow the mouse)
         double angle = Math.atan2(y - spawnY, x - spawnX);
         spawnX += 20.0 * Math.cos(angle);
         spawnY += 20.0 * Math.sin(angle);
         setStarsXY((int) spawnX, (int) spawnY);
     }
 
-    public void setStarsXY(int x, int y) {
+    public void setStarsXY(int x, int y) { //moves the center of the stars INSTANTLY to the specified point.
         for (Star s : stars) {
             s.setSpawn(x, y);
         }
     }
 
-    private void openScenarioChooser() {
+    private void openScenarioChooser() { //opens a standard swing java file chooser to pick custom scenario to play, runs on a seperate thread to not freeze the program while a scenario is being selected.
         Thread chooserThread = new Thread() {
             @Override
             public void run() {
@@ -188,9 +188,9 @@ public class MainMenu { //creates the animation of stars passing by.
         this.customScenarioPath = customScenarioPath;
     }
 
-    private class Star { //to simple to create a seperate class for so we just make a class in a class.
+    private class Star { //to simple to create a seperate class for so we just make a class in a class, it is also ONLY used in this class.
 
-        private double x, y, z, angle, dist, speed;
+        private double x, y, angle, dist, speed;
         private Color color;
         private int screenWidth, screenHeight, spawnX, spawnY;
 
@@ -202,9 +202,8 @@ public class MainMenu { //creates the animation of stars passing by.
             reCreate();
         }
 
-        private void update() {
+        private void update() {// moves and accelerates the star away from the center towards the borders of the screen creating a "warp effect"
             angle = Math.atan2(y - spawnY, x - spawnX);
-            z = Math.hypot(x - spawnX, y - spawnY);
             x += speed * Math.cos(angle);
             y += speed * Math.sin(angle);
             if (x < -50 || x > screenWidth + 50 || y < -50 || y > screenHeight + 50) {
@@ -218,24 +217,23 @@ public class MainMenu { //creates the animation of stars passing by.
             }
         }
 
-        public void setSpawn(int x, int y) {
+        public void setSpawn(int x, int y) { //moves the spawn (center)
             spawnX = x;
             spawnY = y;
         }
 
-        private void reCreate() {
+        private void reCreate() {//as we dont want to remove and create a new star (ineffective), we simply reuse this one by moving it back to the "center"
             angle = (double) MainLoop.rng.nextInt(63) / 10;
             color = new Color(MainLoop.rng.nextInt(155) + 100, MainLoop.rng.nextInt(155) + 100, MainLoop.rng.nextInt(155) + 100);
             
             x = spawnX + ((125 + MainLoop.rng.nextInt(600)) * Math.cos(angle));
             y = spawnY + ((125 + MainLoop.rng.nextInt(600)) * Math.sin(angle));
-            z = 0;
             dist = 4;
             speed = 4;
             angle = Math.atan2(y - spawnY, x - spawnX);
         }
 
-        public void draw(Graphics g) {
+        public void draw(Graphics g) { //draws the star
             g.setColor(color);
             g.fillOval((int) x - 2, (int) y - 2, 4, 4);
             g.drawLine((int) x, (int) y, (int) (x + (-dist * Math.cos(angle))), (int) (y + (-dist * Math.sin(angle))));

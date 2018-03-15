@@ -17,7 +17,7 @@ public abstract class Projectile extends Entity{
     }
     
     @Override
-    public boolean checkCollide(Entity e){
+    public boolean checkCollide(Entity e){//did we colide with someone?
         if(super.checkCollide(e)){
             toCollider(e);
             return true;
@@ -25,18 +25,17 @@ public abstract class Projectile extends Entity{
         return false;
     }
     
-    public abstract void toCollider(Entity e);
+    public abstract void toCollider(Entity e);//what do we do to the entity we collided with?
     
-    public void moveP(){
-        if(!super.move(super.getLocX() + speedX, super.getLocY() + speedY)){
-            super.setAlive(false);
-        }
+    public void moveP(){//moves the projectile based on its speed
+        super.move(super.getLocX() + speedX, super.getLocY() + speedY);
         range -= Math.hypot(speedX, speedY);
         if(range <= 0){
             super.setAlive(false);
         }
     }
     
+    //getters and setters
     public double getSpeedX() {
         return speedX;
     }

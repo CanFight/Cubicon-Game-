@@ -16,7 +16,7 @@ public abstract class Effect extends Entity{
         this.lifeTime = lifeTime;
         
     }
-    protected void updateLifeTime(){
+    protected void updateLifeTime(){//updates the remaining time of the effect
         lifeTime -= 1000 / MainLoop.UPDATES_PER_SEC;
         if(lifeTime <= 0){
             super.setAlive(false);

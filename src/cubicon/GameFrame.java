@@ -4,6 +4,8 @@ import javax.swing.JFrame;
 
 public class GameFrame extends JFrame{
     
+    //contains a short configuration of the jframe.
+    
     public GameFrame(){
         this.setExtendedState(JFrame.MAXIMIZED_BOTH);
         this.setResizable(false);

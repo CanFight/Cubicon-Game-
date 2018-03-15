@@ -11,69 +11,42 @@ import cubicon.weapons.*;
  */
 public class Interceptor extends Enemy {
 
+    //
     private static final int WIDTH = 50;
     private static final int HEIGHT = 50;
     private static final int RADIUS = 30;
+    private static final int SPEED = 12;
+    private static final int CIRCLING_OFFSET = 200;
+    private static final double ACCELERATION = 0.5;
+    private static final double CIRCLING_ROT_SPEED = 0.06;
     private Weapon w1;
-    private double speedX, speedY, accel, circlingAngle, circleRotation;
 
     private static final BufferedImage MODEL = MainLoop.loadImage("Interceptor.png");
 
     public Interceptor(double locX, double locY, GameHandler gameHandler) {
-        super(locX, locY, WIDTH, HEIGHT, RADIUS, "Interceptor", gameHandler, MODEL);
+        super(locX, locY, WIDTH, HEIGHT, RADIUS, CIRCLING_OFFSET, SPEED, ACCELERATION, CIRCLING_ROT_SPEED, "Interceptor", gameHandler, MODEL);
         super.setHpM(30);
         super.setHp(30);
         super.setImmortal(false);
         super.setHpBar(true);
-        speed = 12;
-        speedX = 0;
-        speedY = 0;
-        accel = 0.5;
-        if (MainLoop.rng.nextBoolean()) {
-            circleRotation = 0.06;
-        } else {
-            circleRotation = -0.06;
-        }
-        circlingAngle = (double)MainLoop.rng.nextInt(63) / 10.0;
-        w1 = new PlasmaCannon(super.getgameHandler());
+        w1 = new PlasmaCannon(super.getgameHandler());//this ship only has one weapon therefor we dont use an array.
     }
 
     @Override
-    public void onDeath() {
+    public void onDeath() { //creates an explosion on death.
         super.getgameHandler().addEntity(new ExplosionEffect(super.getLocX(), super.getLocY(), 150));
     }
-    
+
     @Override
-    public void update() {
+    public void update() {//finds a target follows it, attacks it. Also sets the rotation of image to match the angle we are traveling.
         seekTarget();
         if (target != null) {
             angleToTarget = Math.atan2(target.getLocY() - super.getLocY(), target.getLocX() - super.getLocX());
-            w1.fire(angleToTarget, this);
+            w1.fire(angleToTarget, this);//fires all weapons towards the target.
+            updateTargetOffsetCircle();
             moveTowardsTarget();
         }
         w1.lowerCooldown();
-        circlingAngle += circleRotation;
-        if(circlingAngle > 6.3){
-            circlingAngle = 0;
-        }
-        if(circlingAngle < 0){
-            circlingAngle = 6.3;
-        }
-        
-    }
-
-    private void moveTowardsTarget() {
-        double mLocX = target.getLocX() + 200 * Math.cos(circlingAngle);
-        double mLocY = target.getLocY() + 200 * Math.sin(circlingAngle);
-        double angle = Math.atan2(mLocY - super.getLocY(), mLocX - super.getLocX());
-        speedX += accel * Math.cos(angle);
-        speedY += accel * Math.sin(angle);
-        if (Math.hypot(speedX, speedY) > speed) {
-            double travelAngle = Math.atan2(speedY, speedX);
-            speedX = speed * Math.cos(travelAngle);
-            speedY = speed * Math.sin(travelAngle);
-        }
-        super.move(super.getLocX() + speedX, super.getLocY() + speedY);
-        super.setFacingImage(Math.atan2(speedY, speedX));
+        super.setFacingImage(Math.atan2(super.getSpeedY(), super.getSpeedX()));
     }
 }

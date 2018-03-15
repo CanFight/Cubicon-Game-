@@ -16,6 +16,8 @@ import java.util.ArrayList;
  */
 public class Scenario implements Serializable {
 
+    static final long serialVersionUID = -687991492884005033L;
+    
     private ArrayList<Wave> waves;
     private String name = "Just Another Scenario";
     private int currentWave = 0;
@@ -202,7 +204,6 @@ public class Scenario implements Serializable {
 
     public static Scenario loadScenario(String path) {
         try {
-//            ObjectInputStream in = new ObjectInputStream();
             ObjectInputStream in = new ObjectInputStream(new FileInputStream(path));
             return (Scenario) in.readObject();
         } catch (Exception e) {

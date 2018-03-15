@@ -9,6 +9,8 @@ import cubicon.weapons.projectiles.SeekingRocket;
  */
 public class RocketLauncherX3 extends Weapon{
 
+    //the only difference between weapons are the fire method, and their cooldown.
+    
     private static final int CDM = 2000;
     
     public RocketLauncherX3(GameHandler gameHandler) {
@@ -19,7 +21,7 @@ public class RocketLauncherX3 extends Weapon{
     }
     
     @Override
-    public void fire(double angle, Entity e) {
+    public void fire(double angle, Entity e) {//fires 3 missiles with an initial velocity towards the target. These missiles will follow the closest target.
         if(super.noCooldown()){
             angle -= 0.5;
             for(int i = 0; i < 3; i++){

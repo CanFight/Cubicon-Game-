@@ -49,13 +49,9 @@ public abstract class Entity {
 
     public abstract void update();
 
-    public boolean move(double x, double y) {
-        if (gameHandler.isPointWalkable(x, y)) {
-            locX = x;
-            locY = y;
-            return true;
-        }
-        return false;
+    public void move(double x, double y) {
+        locX = x;
+        locY = y;
     }
 
     public boolean checkCollide(Entity e) {
@@ -64,12 +60,12 @@ public abstract class Entity {
 
     public void draw(Graphics g) {
         if (model != null) {
-            g.drawImage(image, (int) locX - image.getWidth() / 2, (int)locY - image.getHeight() / 2, null);
+            g.drawImage(image, (int) locX - image.getWidth() / 2, (int) locY - image.getHeight() / 2, null);
             if (hpBar) {
                 g.setColor(Color.red);
-                g.fillRect((int)locX - width / 2, (int)locY + height / 2, width, 3);
+                g.fillRect((int) locX - width / 2, (int) locY + height / 2, width, 3);
                 g.setColor(Color.green);
-                g.fillRect((int)locX - width / 2, (int) locY + height / 2, (int) ((double) width * (double) hp / (double) hpM), 3);
+                g.fillRect((int) locX - width / 2, (int) locY + height / 2, (int) ((double) width * (double) hp / (double) hpM), 3);
             }
         }
     }

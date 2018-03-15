@@ -19,6 +19,7 @@ public class SeekingRocket extends Projectile {
     private static final int RANGE = 2000;
     private static final double ACCEL = 0.4;
     private static final BufferedImage MODEL = MainLoop.loadImage("Rocket.png");
+    private Entity target;
 
     public SeekingRocket(double locX, double locY, double angle, int team, GameHandler gameHandler) {
         super(locX, locY, WIDTH, HEIGHT, RADIUS, team, RANGE, gameHandler, MODEL);
@@ -31,12 +32,12 @@ public class SeekingRocket extends Projectile {
     }
 
     @Override
-    public void onDeath() {
+    public void onDeath() {//creates a nice explosion effect on death.
         super.getgameHandler().addEntity(new ExplosionEffect(super.getLocX(), super.getLocY(), 75));
     }
-    
+
     @Override
-    public void toCollider(Entity e) {
+    public void toCollider(Entity e) {//damage the target we collideed with and set our state to dead.
         super.setAlive(false);
         e.damage(DAMAGE);
     }
@@ -44,12 +45,12 @@ public class SeekingRocket extends Projectile {
     @Override
     public void update() {
         seekTarget();
+        setSpeedTowardsTarget(target);
         super.moveP();
     }
 
-    private void seekTarget() {
+    private void seekTarget() {//finds the closest ENEMY target.
         double closestTarget = Double.MAX_VALUE;
-        Entity target = null;
         for (Entity e : super.getgameHandler().getEntities()) {
             if (e.getTeam() != super.getTeam() && !e.isImmortal()) {
                 double hypot = Math.hypot(super.getLocX() - e.getLocX(), super.getLocY() - e.getLocY());
@@ -59,6 +60,9 @@ public class SeekingRocket extends Projectile {
                 }
             }
         }
+    }
+
+    private void setSpeedTowardsTarget(Entity target) {//sets this projectiles XY speed based on its location towards the "targets" location.
         if (target != null) {
             double angle = Math.atan2(target.getLocY() - super.getLocY(), target.getLocX() - super.getLocX());
             super.setSpeedX(super.getSpeedX() + (ACCEL * Math.cos(angle)));
@@ -68,7 +72,7 @@ public class SeekingRocket extends Projectile {
                 super.setSpeedX(SPEED * Math.cos(angle));
                 super.setSpeedY(SPEED * Math.sin(angle));
             }
-            super.setFacingImage(angle);
+            super.setFacingImage(angle);//updates the image of this projectile to match its new vector.
         }
     }
 

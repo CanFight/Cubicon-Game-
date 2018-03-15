@@ -9,6 +9,8 @@ import cubicon.effects.EmpEffect;
  */
 public class EMP extends Weapon {
 
+    //the only difference between weapons are the fire method, and their cooldown.
+    
     private static final int CDM = 1000;
 
     public EMP(GameHandler gameHandler) {
@@ -20,14 +22,14 @@ public class EMP extends Weapon {
     }
 
     @Override
-    public void fire(double angle, Entity e) {
+    public void fire(double angle, Entity e) {//Deals 1 damage to all nearby enities. Which basicly destroys all nearby rockets.
         if (super.noCooldown()) {
             for (Entity t : e.getgameHandler().getEntities()) {
                 if (Math.hypot(e.getLocX() - t.getLocX(), e.getLocY() - t.getLocY()) <= 200) {
                         t.damage(1);
                 }
             }
-            e.getgameHandler().addEntity(new EmpEffect(e.getLocX(), e.getLocY()));
+            e.getgameHandler().addEntity(new EmpEffect(e.getLocX(), e.getLocY()));//creates an effect at the position of the enitity that used this weapon.
             super.setCdToMax();
         }
     }

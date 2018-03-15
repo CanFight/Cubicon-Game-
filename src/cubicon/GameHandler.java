@@ -11,11 +11,11 @@ import java.io.ObjectInputStream;
  */
 public class GameHandler {
 
-    private ArrayList<Entity> entities;
-    private ArrayList<Entity> newEntities;
-    private ArrayList<Entity> deadEntities;
-    private Entity player;
-    private Scenario currentScenario;
+    private ArrayList<Entity> entities; //the main array containing all enetities, from simple missiles to enemies and players.
+    private ArrayList<Entity> newEntities; //an array containing new entities that should be added to the main array. (to avoid adding entities to the main array while we are looping through it)
+    private ArrayList<Entity> deadEntities; //used to remove dead arrays, same thing here to avoid removing things while looping through the main array.
+    private Entity player; //the player, we keep track of it so we can determine if he died.
+    private Scenario currentScenario; //current scenario loaded.
     private int aliveEnemies, newWaveTimer;
     private boolean newWaveTimerOn, scenarioWon, scenarioLost;
     private GameFrame frame;
@@ -28,22 +28,21 @@ public class GameHandler {
         aliveEnemies = 0;
     }
 
-    public void newGame(int x, int y, InputHandler inputHandler) {
+    public void newGame(int x, int y, InputHandler inputHandler) {//resets everything. For a new start (usually the new start of a scenario.
         entities.clear();
         player = new Player(x / 2, y / 2, this, inputHandler);
         addEntity(player);
         MainLoop.soundHandler.stopMusic();
-        MainLoop.soundHandler.playMusicJL("Resources/Sound/Boss1.mp3");
     }
 
-    private boolean isPlayerAlive() {
+    private boolean isPlayerAlive() {// returns true if the player is alive else false.
         if (player != null) {
             return player.isAlive();
         }
         return false;
     }
 
-    public void startCampaign() {
+    public void startCampaign() { //loads the campaign file from within the jar, has to be loaded differently from the custom scenarios as this file lies within the jar itself. (so we always have something playable no mater what)
         try {
             ObjectInputStream in = new ObjectInputStream(this.getClass().getResourceAsStream("Resources/Scenarios/Campaign.scenario"));
             currentScenario = (Scenario) in.readObject();
@@ -55,21 +54,17 @@ public class GameHandler {
             e.printStackTrace();
         }
     }
-    
-    public void startCustomScenario(String path){
+
+    public void startCustomScenario(String path) { //loads in the specified scenario and starts it up.
         currentScenario = Scenario.loadScenario(path);
-        if(currentScenario != null){
+        if (currentScenario != null) {
             currentScenario.startScenario();
             scenarioWon = false;
             scenarioLost = false;
             System.out.println("starting custom scenario");
-        }else{
+        } else {
             System.err.println("failed starting custom scenario");
         }
-    }
-
-    public boolean isPointWalkable(double x, double y) {
-        return true;
     }
 
     public void addEntity(Entity e) {
@@ -77,32 +72,32 @@ public class GameHandler {
     }
 
     public void update() {
-        deadEntities.clear();
-        entities.addAll(newEntities);
+        deadEntities.clear();//clear the array of dead entities.
+        entities.addAll(newEntities);//add all the new entities to the primary enteties array.
         newEntities.clear();
-        aliveEnemies = 0;
-        for (Entity e : entities) {
+        aliveEnemies = 0;//reset the counter for number of alive enemies.
+        for (Entity e : entities) {//update all the enemies.
             e.update();
-            if (e.getTeam() == 2) {
+            if (e.getTeam() == 2) {// team 2 == enemies, so if we find one, count it.
                 aliveEnemies++;
             }
-            if (!e.isAlive()) {
+            if (!e.isAlive()) {//is the entitie dead, then we add it to the dead entities array for removal.
                 deadEntities.add(e);
             }
         }
-        for (Entity e : deadEntities) {
+        for (Entity e : deadEntities) {//removes all dead entities from the primary array.
             e.onDeath();
             entities.remove(e);
         }
 //        System.out.println("Enemies: " + aliveEnemies);
         checkCollide();
         checkForNewWave();
-        if(!isPlayerAlive()){
+        if (!isPlayerAlive()) {//if the player is dead he loses the scenario.
             scenarioLost = true;
         }
     }
 
-    private void checkForNewWave() {
+    private void checkForNewWave() {//checks if its time to start the next wave. (if number of hostile entities is 0, next wave starts)
         if (aliveEnemies == 0 && newWaveTimer <= 0 && newWaveTimerOn == false) {
             if (currentScenario.isScenarioOver()) {
                 scenarioWon = true;
@@ -123,9 +118,12 @@ public class GameHandler {
     }
 
     public void draw(Graphics g) {
+        //draws all the entities
         for (Entity e : entities) {
             e.draw(g);
         }
+        
+        //draws different text based on things like losing, winning or next wave starting.
         if (scenarioWon) {
             g.setColor(Color.magenta);
             g.setFont(new Font("LucidaSans", Font.BOLD, 40));
@@ -147,9 +145,10 @@ public class GameHandler {
             g.setFont(new Font("LucidaSans", Font.BOLD, 20));
             g.drawString("Wave " + (currentScenario.getCurrentWave() + 2), frame.getWidth() / 2 - g.getFontMetrics().stringWidth("Wave " + (currentScenario.getCurrentWave() + 1)) / 2, frame.getHeight() / 2 + 40);
         }
+        
     }
 
-    public void checkCollide() {
+    public void checkCollide() { //checks if 2 entites of different teams has collided, mostly used by projectiles
         for (Entity e1 : entities) {
             for (Entity e2 : entities) {
                 if (e1.getTeam() != e2.getTeam()) {
@@ -159,7 +158,7 @@ public class GameHandler {
         }
     }
 
-    public ArrayList<Entity> getEntities() {
+    public ArrayList<Entity> getEntities() { //returns the primary array of all the eneteties.
         return entities;
     }
 

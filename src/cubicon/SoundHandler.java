@@ -7,6 +7,17 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 import javazoom.jl.player.Player; //A java library that supports mp3 files. (to cut down project size)
+/*
+    (if this class couses any problems please just comment out the import for javazoom.jl.player.Player and the content of the playMusicJL class.)
+
+    This class might not be used in the final submission due to problems with copy right on alot of music and sounds.
+    However i will still keep it in here as it is a a part of the program. The program itself is also made so it can use it easly.
+
+    To play mp3 sounds (not supported by default in java we use JLayer wich is an OPEN SOURCE library mp3 player.
+    Their official website:
+    http://www.javazoom.net/javalayer/javalayer.html
+
+*/
 
 public class SoundHandler {
 
@@ -16,7 +27,7 @@ public class SoundHandler {
     public SoundHandler() {
     }
 
-   public void playMusicJL(String url) {
+   public void playMusicJL(String url) { //uses the JLayer Library, needs to run on its on thread else the program will wait for it to finish the current audio clip.
          try {
             FileInputStream input;
             input = new FileInputStream(url);
@@ -40,7 +51,7 @@ public class SoundHandler {
         }
     }
     
-    public void stopMusic(){
+    public void stopMusic(){ //stops the music by stoping its thread (ugly sulotion but didnt get it to work otherwise)
         try{
             musicThread.stop();
         }catch(Exception e){
@@ -48,7 +59,7 @@ public class SoundHandler {
         }
     }
 
-    public void playSound(final String url) {    //Effectively plays any sound on top of eachother
+    public void playSound(final String url) {    //Effectively plays any sound on top of eachother (wav). Used mainly for effects.
         try {
             Clip clip = AudioSystem.getClip();
             AudioInputStream inputStream = AudioSystem.getAudioInputStream(new File(("./" + url)));

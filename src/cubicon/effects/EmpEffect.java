@@ -19,8 +19,8 @@ public class EmpEffect extends Effect {
 
     @Override
     public void update() {
-        super.setFacingImage(MainLoop.rng.nextInt(6));
-        super.updateLifeTime();
+        super.setFacingImage(MainLoop.rng.nextInt(6));//gives the this effects image a random rotation. 6 is close enouth to 2 PI.
+        super.updateLifeTime();//updates the lifetime also checks so the effect is still "alive".
     }
 
 }

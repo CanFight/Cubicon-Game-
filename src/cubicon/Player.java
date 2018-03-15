@@ -8,12 +8,12 @@ import cubicon.weapons.*;
  */
 public class Player extends Entity{
 
-    private static final BufferedImage playerModel = MainLoop.loadImage("SpaceShip.png");
-    private InputHandler inputHandler;
+    private static final BufferedImage playerModel = MainLoop.loadImage("SpaceShip.png");//loads the model for the players ship!
+    private InputHandler inputHandler;//so the player knows what to do
     private double facingAngle, accel, speedX, speedY,speedM;
-    private ArrayList<Weapon> weapons;
+    private ArrayList<Weapon> weapons; //an array containing all the players weapons.
     
-    public Player(int locX, int locY, GameHandler gameHandler, InputHandler inputHandler) {
+    public Player(int locX, int locY, GameHandler gameHandler, InputHandler inputHandler) {//construction and a little bit of setup
         super(locX, locY, 50, 50, 25, 1, gameHandler, playerModel);
         this.inputHandler = inputHandler;
         speedM = 8;
@@ -32,15 +32,15 @@ public class Player extends Entity{
 
     @Override
     public void update() {
-        facingAngle = Math.atan2(inputHandler.getMouseY() - super.getLocY(), inputHandler.getMouseX() - super.getLocX());
-        super.setFacingImage(facingAngle);
-        if(inputHandler.isMousePressLeft()){
-            if(Math.hypot(inputHandler.getMouseY() - super.getLocY(), inputHandler.getMouseX() - super.getLocX()) > speedM){
-                accel();
+        facingAngle = Math.atan2(inputHandler.getMouseY() - super.getLocY(), inputHandler.getMouseX() - super.getLocX());//calculate the angle between the player and the mouse.
+        super.setFacingImage(facingAngle);//rotates the model accordingly
+        if(inputHandler.isMousePressLeft()){//does the player wish to move? In that case accelerate him towards the mouse.
+            if(Math.hypot(inputHandler.getMouseY() - super.getLocY(), inputHandler.getMouseX() - super.getLocX()) > speedM){//checks so the distance between the curson and the player isnt to small, to avoid flickering.
+                accel();//update the acceleration
             }
         }
         super.move(super.getLocX() + speedX, super.getLocY() + speedY);
-        for(Weapon w: weapons){
+        for(Weapon w: weapons){//updates the cooldown of all the weapons.
             w.lowerCooldown();
         }
         fireWeapons();

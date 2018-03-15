@@ -10,6 +10,8 @@ import cubicon.GameHandler;
  */
 public class PlasmaBall extends Projectile{
 
+    //the following variables are huge part of what differs this projectile from others.
+    
     private static final int WIDTH = 10;
     private static final int HEIGHT = 10;
     private static final int RADIUS = 5;
@@ -28,11 +30,11 @@ public class PlasmaBall extends Projectile{
     }
 
     @Override
-    public void onDeath() {
+    public void onDeath() { //does nothing on dead.
     }
 
     @Override
-    public void toCollider(Entity e) {
+    public void toCollider(Entity e) {//deals damage to the enity we collide with, also sets this enitites state to dead.
         if(!e.isImmortal()){
             super.setAlive(false);
         }
@@ -40,7 +42,7 @@ public class PlasmaBall extends Projectile{
     }
 
     @Override
-    public void update() {
+    public void update() {//when the update method is called we update this projectiles position with the move method.
         super.moveP();
     }
     

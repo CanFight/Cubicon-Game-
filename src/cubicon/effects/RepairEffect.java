@@ -20,9 +20,9 @@ public class RepairEffect extends Effect {
 
     @Override
     public void update() {
-        super.setFacingImage(MainLoop.rng.nextInt(6));
-        super.updateLifeTime();
-        super.setLocX(repairedEntity.getLocX());
+        super.setFacingImage(MainLoop.rng.nextInt(6));//gives the this effects image a random rotation. 6 is close enouth to 2 PI.
+        super.updateLifeTime();//updates the lifetime also checks so the effect is still "alive".
+        super.setLocX(repairedEntity.getLocX());//couses this effect to be attached to a enity.
         super.setLocY(repairedEntity.getLocY());
     }
 

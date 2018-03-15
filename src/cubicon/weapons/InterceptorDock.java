@@ -9,6 +9,8 @@ import cubicon.enemies.Interceptor;
  */
 public class InterceptorDock extends Weapon{
 
+    //the only difference between weapons are the fire method, and their cooldown.
+    
     private static final int CDM = 10000;
     
     public InterceptorDock(GameHandler gameHandler) {
@@ -19,7 +21,7 @@ public class InterceptorDock extends Weapon{
     }
     
     @Override
-    public void fire(double angle, Entity e) {
+    public void fire(double angle, Entity e) {//Creates a small "ship" that attacks follows and attacks enemies of the enitity that used this weapon.
         if(super.noCooldown()){
             Interceptor t = new Interceptor(e.getLocX() + super.getOffsetDist() * Math.cos(super.getOffsetAngle() + e.getFacing()),
                     e.getLocY() + super.getOffsetDist() * Math.sin(super.getOffsetAngle() + e.getFacing()), e.getgameHandler());

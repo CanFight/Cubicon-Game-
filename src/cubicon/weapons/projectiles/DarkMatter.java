@@ -11,6 +11,8 @@ import cubicon.effects.ExplosionEffect;
  */
 public class DarkMatter extends Projectile{
 
+    //the following variables are huge part of what differs this projectile from others.
+    
     private static final int WIDTH = 25;
     private static final int HEIGHT = 25;
     private static final int RADIUS = 15;
@@ -29,12 +31,12 @@ public class DarkMatter extends Projectile{
     }
 
     @Override
-    public void onDeath() {
+    public void onDeath() {//creates an explosion effect where this entity dies.
         super.getgameHandler().addEntity(new ExplosionEffect(super.getLocX(), super.getLocY(), 25));
     }
 
     @Override
-    public void toCollider(Entity e) {
+    public void toCollider(Entity e) {//deals damage to the enity we collide with, also sets this enitites state to dead.
         if(!e.isImmortal()){
             super.setAlive(false);
         }
@@ -42,7 +44,7 @@ public class DarkMatter extends Projectile{
     }
 
     @Override
-    public void update() {
+    public void update() {//when the update method is called we update this projectiles position with the move method.
         super.moveP();
     }
     
